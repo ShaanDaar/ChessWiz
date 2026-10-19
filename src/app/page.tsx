@@ -83,7 +83,7 @@ export default function HomePage() {
       >
         <Link
           id="play-button"
-          href="/game"
+          href="/play"
           className="group font-display relative inline-flex min-w-[200px] animate-[pulse-subtle_3s_cubic-bezier(0.4,0,0.6,1)_infinite] items-center justify-center gap-3 rounded-full bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 px-8 py-4 text-2xl font-semibold text-[#140b07] shadow-[0_12px_36px_-4px_rgba(217,119,6,0.65),0_0_30px_6px_rgba(245,158,11,0.35)] transition-all duration-300 hover:scale-105 hover:shadow-[0_18px_48px_-4px_rgba(217,119,6,0.85),0_0_50px_10px_rgba(245,158,11,0.55)] focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:ring-offset-4 focus-visible:ring-offset-[#140b07] focus-visible:outline-none active:scale-95 motion-reduce:animate-none sm:min-w-[240px] sm:px-12 sm:py-5 sm:text-3xl"
         >
           <span>Play</span>

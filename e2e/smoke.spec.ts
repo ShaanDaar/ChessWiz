@@ -28,7 +28,7 @@ test.describe('Landing Page E2E & Accessibility', () => {
     // 5. Verify Play button
     const playBtn = page.getByRole('link', { name: 'Play' });
     await expect(playBtn).toBeVisible();
-    await expect(playBtn).toHaveAttribute('href', '/game');
+    await expect(playBtn).toHaveAttribute('href', '/play');
   });
 
   test('supports sequential keyboard navigation and skip link', async ({ page }) => {
@@ -89,5 +89,34 @@ test.describe('Landing Page E2E & Accessibility', () => {
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
     expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
+  });
+
+  test('Auth Guard intercepts unauthenticated requests to /play, /game/*, and /review/*', async ({
+    page,
+  }) => {
+    // 1. Direct navigation to /play redirects to /login?returnTo=%2Fplay
+    await page.goto('/play');
+    await expect(page).toHaveURL(/\/login\?returnTo=%2Fplay/);
+    await expect(page.getByRole('heading', { name: /welcome back/i })).toBeVisible();
+
+    // 2. Direct navigation to /game/xyz redirects to /login?returnTo=%2Fgame%2Fxyz
+    await page.goto('/game/xyz-123');
+    await expect(page).toHaveURL(/\/login\?returnTo=%2Fgame%2Fxyz-123/);
+
+    // 3. Direct navigation to /review/abc redirects to /login?returnTo=%2Freview%2Fabc
+    await page.goto('/review/abc-456');
+    await expect(page).toHaveURL(/\/login\?returnTo=%2Freview%2Fabc-456/);
+
+    // 4. Clicking Play button on landing page redirects unauthenticated user to login
+    await page.goto('/');
+    // force: true because the Play button has an infinite pulse animation
+    // that Playwright's actionability check considers "not stable"
+    await page.getByRole('link', { name: 'Play' }).click({ force: true });
+    await expect(page).toHaveURL(/\/login\?returnTo=%2Fplay/);
+
+    // 5. Clicking Register now link preserves returnTo parameter
+    await page.getByRole('link', { name: /register now/i }).click();
+    await expect(page).toHaveURL(/\/register\?returnTo=%2Fplay/);
+    await expect(page.getByRole('heading', { name: /pull up a chair/i })).toBeVisible();
   });
 });
