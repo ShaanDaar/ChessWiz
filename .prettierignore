@@ -3,5 +3,7 @@ node_modules
 dist
 build
 coverage
+test-results
+playwright-report
 *.min.js
 package-lock.json
